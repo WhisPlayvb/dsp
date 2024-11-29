@@ -1,0 +1,189 @@
+1. Cannon’s Matrix Multiplication Algorithm
+Concept: 
+    Cannon's algorithm is an efficient method for multiplying two large matrices in a distributed system. It divides the matrices into smaller blocks and assigns each block to a processor. This approach reduces communication overhead and balances the computational load among processors.
+Standard Algorithm:
+    1.	Block Division: Divide matrices AAA and BBB into p×pp \times pp×p blocks, where ppp is the number of processors.
+    2.	Initial Alignment: Align the blocks of AAA and BBB such that each processor holds a specific block of AAA and BBB.
+    3.	Cyclic Shifting:
+        o	Perform a cyclic shift of blocks in AAA to the left by one position.
+        o	Perform a cyclic shift of blocks in BBB upwards by one position.
+    4.	Local Computation: Each processor computes the local product of its assigned blocks of AAA and BBB.
+    5.	Result Aggregation: After completing the shifts and computations, gather all local products to form the final matrix.
+Viva Questions and Answers:
+	Q: What is the primary advantage of using Cannon's algorithm for matrix multiplication?
+	         A: It minimizes communication between processors and ensures balanced workload distribution, leading to efficient computation.
+	Q: How does the cyclic shifting mechanism in Cannon's algorithm enhance performance?
+	         A: Cyclic shifting ensures that each processor works on different blocks in each iteration, reducing idle times and improving parallelism.
+	Q: In which scenarios is Cannon's algorithm particularly beneficial?
+	         A: It is beneficial when multiplying large matrices in a distributed system with multiple processors, especially when the matrices are too large to fit into a single processor's memory.
+	Q: What challenges might arise when implementing Cannon's algorithm?
+	         A: Challenges include managing data dependencies, ensuring proper synchronization among processors, and handling communication delays.
+	Q: How does Cannon's algorithm compare to traditional matrix multiplication methods?
+	         A: Traditional methods perform computations sequentially, which can be time-consuming for large matrices. Cannon's algorithm leverages parallelism to speed up the process.
+________________________________________________________________________________
+2. Lamport Logical Clock
+Concept: 
+    In distributed systems, Lamport's Logical Clock is used to order events without relying on synchronized physical clocks. Each process maintains a counter that is incremented with each event, ensuring a consistent ordering of events across the system.
+Standard Algorithm:
+    1.	Initialization: Each process initializes its counter to zero.
+    2.	Event Handling:
+        o	Internal Events: Increment the counter by one.
+        o	Message Sending: Increment the counter by one and include the counter value in the message.
+        o	Message Receiving: Set the counter to the maximum of its current value and the received counter value, then increment by one.
+    3.  Event Ordering: Use the counter values to determine the order of events. If C1C1C1 and C2C2C2 are counters for events E1E1E1 and E2E2E2 respectively:
+        o	If C1<C2C1 < C2C1<C2, then E1E1E1 occurred before E2E2E2.
+        o	If C1>C2C1 > C2C1>C2, then E1E1E1 occurred after E2E2E2.
+        o	If C1=C2C1 = C2C1=C2, the events are concurrent.
+Viva Questions and Answers:
+      	Q: What problem does Lamport's Logical Clock address in distributed systems?
+     	     A: It addresses the challenge of ordering events in a system where processes do not have synchronized clocks.
+    	Q: How does Lamport's Logical Clock maintain event ordering?
+     	     A: By assigning a numerical value (counter) to each event, which is incremented and adjusted based on message exchanges.
+    	Q: Can Lamport's Logical Clock determine the exact time difference between events?
+     	     A: No, it only provides a partial ordering of events, not the exact time difference.
+    	Q: What is the significance of the counter value in Lamport's Logical Clock?
+     	     A: The counter value represents the logical time of an event, helping to establish the sequence of events.
+    	Q: How does Lamport's Logical Clock handle concurrent events?
+     	     A: If two events have the same counter value, they are considered concurrent, meaning neither event can be said to have occurred before the other.
+________________________________________________________________________________
+3. Dining Philosopher Problem (Synchronization)
+Concept: 
+    The Dining Philosopher Problem models the scenario where multiple processes (philosophers) share limited resources (forks). The challenge is to synchronize access to these resources to prevent conflicts such as deadlock and starvation.
+Standard Algorithm:
+    1.	Initialization: Assign a fork to each philosopher.
+    2.	Thinking Phase: Philosophers think without holding any forks.
+    3.	Eating Phase:
+        o 	A philosopher picks up the left fork.
+        o	Then picks up the right fork.
+        o	If both forks are available, the philosopher eats.
+         	After eating, the philosopher puts down both forks.
+    4.	Synchronization Mechanism: Use semaphores or mutexes to control access to forks, ensuring that no two philosophers can pick up the same fork simultaneously.
+Viva Questions and Answers:
+      	Q: What is the main objective of the Dining Philosopher Problem?
+     	     A: To model and solve the issue of synchronizing access to shared resources among concurrent processes.
+    	Q: How can deadlock be avoided in this problem?
+     	     A: By ensuring that not all philosophers can pick up both forks simultaneously, or by introducing a waiter to control access.
+    	Q: What role do semaphores play in solving this problem?
+     	     A: Semaphores are used to manage access to forks, preventing multiple philosophers from using the same fork at the same time.
+    	Q: How does the problem relate to real-world scenarios?
+     	     A: It illustrates the challenges of resource sharing and synchronization in concurrent systems.
+    	Q: What are the potential consequences of not properly synchronizing access to shared resources?
+     	     A: Without proper synchronization, issues like deadlock, starvation, and race conditions can occur, leading to system inefficiencies.
+________________________________________________________________________________
+4. Ring Algorithm
+Concept: 
+    The Ring Algorithm is a method for electing a coordinator (leader) in a distributed system. Processes are arranged in a logical ring, and messages are passed around the ring to determine the process with the highest identifier, which becomes the coordinator.
+Standard Algorithm:
+    1.	Initialization: Arrange all processes in a logical ring.
+    2.	Election Initiation: A process detects a failure and initiates an election by sending its identifier to the next process in the ring.
+    3.	Message Passing:
+        •	Each process compares the received identifier with its own.
+        •	If the received identifier is larger, forward it to the next process.
+        •	If the process’s own identifier is larger, forward its own identifier.
+    4.	Leader Announcement:
+        o	When a process receives its own identifier back, it becomes the leader.
+        o	The leader announces itself to all processes in the ring.
+Viva Questions and Answers:
+      	Q: What is the purpose of the Ring Algorithm?
+     	     A: It is used for leader election in distributed systems, ensuring one process is designated as the coordinator.
+    	Q: What is the role of the logical ring in this algorithm?
+     	     A: The logical ring ensures that messages are passed in a fixed order, simplifying the election process.
+    	Q: How does the Ring Algorithm handle process failures?
+     	     A: The algorithm bypasses failed processes by continuing message passing with the remaining processes.
+    	Q: What happens if multiple processes initiate elections simultaneously?
+     	     A: The process with the highest identifier will eventually win, as duplicate elections are naturally resolved.
+    	Q: How does the Ring Algorithm compare to other leader election algorithms?
+     	     A: It is simple and requires minimal communication but may take more time in large systems due to its sequential message passing.
+________________________________________________________________________________
+5. Bully Algorithm
+Concept:
+    The Bully Algorithm is another leader election method where higher-priority processes (with larger identifiers) take over the election if they detect a failure. Lower-priority processes cannot win if a higher-priority process is active.
+Standard Algorithm:
+    1.	Election Initiation:
+        o 	A process notices the leader has failed and starts an election.
+        o	It sends an election message to all processes with higher IDs.
+    2.	Response Handling:
+        o	If a higher-ID process responds, it takes over the election.
+        o	The initiating process waits for the new leader announcement.
+        o	If no higher-ID process responds, the initiating process becomes the leader.
+    3.	Leader Announcement:
+        o	The new leader broadcasts a message to all processes, announcing itself as the coordinator.
+Viva Questions and Answers:
+      	Q: Why is it called the Bully Algorithm?
+     	     A: Higher-priority processes "bully" lower-priority ones by taking control of the election.
+    	Q: What happens if a lower-ID process initiates an election while a higher-ID process is still alive?
+     	     A: The higher-ID process will respond, take over the election, and eventually declare itself the leader.
+    	Q: How does the algorithm ensure that the process with the highest ID becomes the leader?
+     	     A: Only the process with the highest ID remains unchallenged, as no higher-ID process exists to compete.
+    	Q: What are the drawbacks of the Bully Algorithm?
+     	     A: It generates a lot of messages, especially in large systems, and has high communication overhead.
+    	Q: How does the Bully Algorithm handle process failures?
+     	     A: The election process continues with the remaining active processes.
+________________________________________________________________________________
+6. Word Count Problem Using MapReduce
+Concept:
+    The Word Count problem demonstrates how to process and analyze large datasets. MapReduce splits the dataset into smaller chunks, processes them in parallel to count occurrences of each word, and combines the results.
+Standard Algorithm:
+    1.	Map Phase:
+        o	Split the dataset into smaller chunks.
+        o	Each mapper processes a chunk and produces (word, 1) pairs for every word.
+    2.	Shuffle and Sort Phase:
+        o	Group all (word, 1) pairs by word.
+        o	Sort the groups for easy reduction.
+    3.	Reduce Phase:
+        o	Sum the counts for each word from all groups.
+        o	Output the final count for each word.
+Viva Questions and Answers:
+      	Q: What is the purpose of the MapReduce framework?
+     	     A: It simplifies the processing of large datasets by splitting tasks into smaller, parallelizable parts.
+    	Q: What is the role of the Map phase?
+     	     A: It processes data chunks and generates intermediate (key, value) pairs.
+    	Q: What does the Shuffle and Sort phase do?
+     	     A: It groups and sorts intermediate results by key to prepare for the Reduce phase.
+    	Q: What happens in the Reduce phase?
+     	     A: The reducer sums up values for each key to produce the final result.
+    	Q: How does MapReduce handle failures?
+     	     A: Failed tasks are restarted on another node, ensuring fault tolerance.
+________________________________________________________________________________
+20 General Viva Questions and Answers
+  	Q: What is a distributed system?
+ 	     A: A system where multiple computers work together to achieve a common goal, appearing as a single system to users.
+	Q: What are the challenges in distributed systems?
+ 	     A: Challenges include fault tolerance, synchronization, scalability, and maintaining consistency.
+	Q: What is fault tolerance?
+ 	     A: The ability of a system to continue functioning even when some components fail.
+	Q: What is the difference between strong and eventual consistency?
+ 	     A: Strong consistency ensures all nodes have the same data immediately, while eventual consistency ensures they converge over time.
+	Q: What is a key-value store?
+ 	     A: A type of database that stores data as key-value pairs, used for fast lookups.
+	Q: How does the Ring Algorithm ensure a leader is elected?
+ 	     A: By circulating messages and comparing process IDs until one process is chosen.
+	Q: What are semaphores used for in distributed systems?
+ 	     A: They are used to manage resource sharing and prevent conflicts.
+	Q: What is the purpose of a logical clock?
+ 	     A: To order events in a system without a global clock.
+	Q: What is deadlock?
+ 	     A: A situation where processes wait indefinitely for resources held by each other.
+	Q: What is the difference between Ring and Bully algorithms?
+ 	     A: Ring passes messages sequentially, while Bully prioritizes processes with higher IDs.
+  	Q: How does MapReduce achieve parallelism?
+ 	     A: By dividing data into chunks and processing them independently across nodes.
+	Q: What is the difference between synchronization and consistency?
+ 	     A: Synchronization ensures coordinated operations; consistency ensures data accuracy across nodes.
+	Q: What is the role of a coordinator in distributed systems?
+ 	     A: To manage tasks like resource allocation and decision-making.
+	Q: Why is scalability important in distributed systems?
+ 	     A: It ensures the system can handle increased load by adding resources.
+	Q: What is replication in distributed systems?
+ 	     A: Creating copies of data to improve availability and fault tolerance.
+	Q: What are the types of failures in distributed systems?
+ 	     A: Types include crash, omission, timing, and Byzantine failures.
+	Q: What is a quorum in distributed systems?
+ 	     A: A majority subset of nodes required for decisions or data consistency.
+	Q: What is a mutex?
+ 	     A: A locking mechanism to prevent simultaneous access to a resource.
+	Q: What is the difference between centralized and decentralized systems?
+ 	     A: Centralized systems have a single control point; decentralized systems distribute control.
+	Q: What is the CAP theorem?
+ 	     A: It states that a distributed system can achieve at most two of Consistency, Availability, and Partition tolerance at the same time.
+

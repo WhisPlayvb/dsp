@@ -1,0 +1,56 @@
+*** Steps to move ZIP file to hadoop user from windows and unzip file:
+1. ls -ld /home/hadoop
+2. sudo chown $USER:$USER /home/hadoop
+3. sudo cp "/mnt/c/Users/HP/Downloads/MapReduce.zip" /home/hadoop/
+4. ls /home/hadoop/MapReduce.zip
+5. sudo apt update
+6. sudo apt install unzip -y
+7. sudo chown -R $USER:$USER /home/hadoop
+8. unzip MapReduce.zip
+
+
+*** Step to run MapReduce program
+1. cd /home/hadoop/MapReduce/src/main/java/
+2. javac -classpath $(hadoop classpath) -d . WordCount.java
+3. jar cf WordCount.jar WordCount*.class
+4. hdfs dfs -mkdir -p /user/hadoop/input
+hdfs dfs -put /home/hadoop/MapReduce/input.txt /user/hadoop/input/
+5. hadoop jar WordCount.jar WordCount /user/hadoop/input /user/hadoop/output
+6. hdfs dfs -cat /user/hadoop/output/part-r-00000
+
+*** If Error occurs at step 5 use below commands
+1. cd $HADOOP_HOME/etc/hadoop
+2. ls
+3. echo $HADOOP_HOME  
+			(OUTPUT->/home/hadoop/hadoop-3.3.6)
+4. nano $HADOOP_HOME/etc/hadoop/mapred-site.xml
+5. 
+<configuration>
+    <!-- YARN Application Master Environment Configuration -->
+    <property>
+        <name>yarn.app.mapreduce.am.env</name>
+        <value>HADOOP_MAPRED_HOME=/home/hadoop/hadoop-3.3.6</value>
+    </property>
+    <!-- Map Environment Configuration -->
+    <property>
+        <name>mapreduce.map.env</name>
+        <value>HADOOP_MAPRED_HOME=/home/hadoop/hadoop-3.3.6</value>
+    </property>
+    <!-- Reduce Environment Configuration -->
+    <property>
+        <name>mapreduce.reduce.env</name>
+        <value>HADOOP_MAPRED_HOME=/home/hadoop/hadoop-3.3.6</value>
+    </property>
+</configuration>
+6. stop-all.sh
+7. hadoop jar WordCount.jar WordCount /user/hadoop/input /user/hadoop/output
+
+**** If error occur in 7th step of (safemode) follow below step
+1. hdfs dfs -ls /user/Hadoop
+2. hdfs dfs -rm -r /user/hadoop/output
+3. hdfs fsck /
+4. hdfs dfs -ls -R /user/Hadoop
+5. hdfs dfs -chmod -R 777 /user/Hadoop
+6. hdfs dfs -ls /user/hadoop/input
+hdfs dfs -cat /user/hadoop/input/*
+
